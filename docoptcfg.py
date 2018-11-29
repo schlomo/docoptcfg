@@ -57,7 +57,7 @@ def settable_options(doc, argv, ignore, options_first):
     parsed_argv = docopt.parse_argv(docopt.TokenStream(argv, docopt.DocoptExit), list(options), options_first)
     overridden = [o.long for o in parsed_argv if hasattr(o, 'long')]
     for option in options:
-        if option.long in overridden or (option.long in ignore or option.short in ignore):
+        if option.long in overridden or (option.long in ignore or option.short in ignore) or option.long is None:
             continue
         if option.argcount == 0:
             booleans.add(option.long)

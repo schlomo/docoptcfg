@@ -24,6 +24,7 @@ Options:
     -v --verbose                Debug logging.
     -V --version                Show version and exit.
     -w DIR --working-dir=DIR    Working directory for converted music, etc.
+    -X FOO                      Test having only a short option
 """
 EXPECTED_FAM = {
     '--config': None,
@@ -37,6 +38,7 @@ EXPECTED_FAM = {
     '--verbose': False,
     '--version': False,
     '--working-dir': None,
+    '-X': None,
     'run': True,
 }
 
