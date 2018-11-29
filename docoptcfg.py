@@ -178,7 +178,7 @@ def get_opt(key, config, section, booleans, repeatable):
     return str(config.get(section, key[2:]))
 
 
-def values_from_file(docopt_dict, config_option, settable, booleans, repeatable):
+def values_from_file(docopt_dict, config_option, settable, booleans, repeatable, ignore_missing_default_config):
     """Parse config file and read settable values.
 
     Can be overridden by both command line arguments and environment variables.
@@ -191,6 +191,7 @@ def values_from_file(docopt_dict, config_option, settable, booleans, repeatable)
     :param iter settable: Option long names available to set by config file.
     :param iter booleans: Option long names of boolean/flag types.
     :param iter repeatable: Option long names of repeatable options.
+    :param bool ignore_missing_default_config: Not to raise Exception if config file or config section is missing
 
     :return: Settable values.
     :rtype: dict
@@ -217,10 +218,14 @@ def values_from_file(docopt_dict, config_option, settable, booleans, repeatable)
     except Error as exc:
         raise DocoptcfgFileError('Unable to parse config file.', str(exc))
     except IOError as exc:
+        if ignore_missing_default_config:
+            return defaults
         raise DocoptcfgFileError('Unable to read config file.', str(exc))
 
     # Make sure section is in config file.
     if not config.has_section(section):
+        if ignore_missing_default_config:
+            return defaults
         raise DocoptcfgFileError('Section [{0}] not in config file.'.format(section))
 
     # Parse config file.
@@ -232,7 +237,7 @@ def values_from_file(docopt_dict, config_option, settable, booleans, repeatable)
 
 
 # pylint: disable=keyword-arg-before-vararg
-def docoptcfg(doc, argv=None, env_prefix=None, config_option=None, ignore=None, *args, **kwargs):
+def docoptcfg(doc, argv=None, env_prefix=None, config_option=None, ignore=None, ignore_missing_default_config=False, *args, **kwargs):
     """Pass most args/kwargs to docopt. Handle `env_prefix` and `config_option`.
 
     :raise DocoptcfgError: If `config_option` isn't found in docstring.
@@ -274,6 +279,7 @@ def docoptcfg(doc, argv=None, env_prefix=None, config_option=None, ignore=None, 
             settable,
             booleans,
             repeatable,
+            ignore_missing_default_config
         )
         docopt_dict.update(defaults)
 

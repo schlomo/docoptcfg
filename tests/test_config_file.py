@@ -6,7 +6,11 @@ from textwrap import dedent
 import pytest
 
 from docoptcfg import docoptcfg, DocoptcfgError, DocoptcfgFileError
-from tests import DOCSTRING_FAM, DOCSTRING_MULTI, DOCSTRING_NOT_MULTI, EXPECTED_FAM, EXPECTED_MULTI, EXPECTED_NOT_MULTI
+
+from tests import (DOCSTRING_FAM, EXPECTED_FAM,  # noqa: I101, I202
+                    DOCSTRING_MULTI, EXPECTED_MULTI,
+                    DOCSTRING_NOT_MULTI, EXPECTED_NOT_MULTI,
+                    DOCSTRING_DEFAULT_CONFIGFILE, EXPECTED_DEFAULT_CONFIGFILE)
 
 
 def test_none():
@@ -241,4 +245,13 @@ def test_multi(monkeypatch, tmpdir, multi):
     expected['--key'] = ['a', 'b', 'c'] if multi else '\na\nb\nc'
 
     actual = docoptcfg(docstring, config_option='--config')
+    assert actual == expected
+
+def test_default_config_file_is_missing():
+    """Test making the config file optional
+
+    :param tmpdir: pytest fixture.
+    """
+    expected = EXPECTED_DEFAULT_CONFIGFILE.copy()
+    actual = docoptcfg(DOCSTRING_DEFAULT_CONFIGFILE, argv=[], ignore_missing_default_config=True, config_option='--config')
     assert actual == expected

@@ -67,3 +67,17 @@ EXPECTED_NOT_MULTI = {
     '--key': None,
     '<pos>': '1',
 }
+
+
+DOCSTRING_DEFAULT_CONFIGFILE = """\
+Test handling of default config file options.
+
+Usage:
+    my_script [--config=FILE]
+
+Options:
+    --config=FILE   Path INI config file [default: /skdjfgksdhfgsdfgjshdf.ini].
+"""
+EXPECTED_DEFAULT_CONFIGFILE = {
+    '--config': "/skdjfgksdhfgsdfgjshdf.ini"
+}
