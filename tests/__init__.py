@@ -73,11 +73,16 @@ DOCSTRING_DEFAULT_CONFIGFILE = """\
 Test handling of default config file options.
 
 Usage:
-    my_script [--config=FILE]
+    my_script <pos> [--config=FILE] [--foo=FOO] [--baz=FOO]
 
 Options:
     --config=FILE   Path INI config file [default: /skdjfgksdhfgsdfgjshdf.ini].
+    --foo=FOO       Foo option
+    --baz=FOO       Baz option
 """
 EXPECTED_DEFAULT_CONFIGFILE = {
-    '--config': "/skdjfgksdhfgsdfgjshdf.ini"
+    '--config': '/skdjfgksdhfgsdfgjshdf.ini',
+    '--foo': 'bar',
+    '--baz': None,
+    '<pos>': '1'
 }

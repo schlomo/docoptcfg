@@ -247,11 +247,79 @@ def test_multi(monkeypatch, tmpdir, multi):
     actual = docoptcfg(docstring, config_option='--config')
     assert actual == expected
 
+
 def test_default_config_file_is_missing():
-    """Test making the config file optional
+    """Test making the default config file optional."""
+    expected = EXPECTED_DEFAULT_CONFIGFILE.copy()
+    actual = docoptcfg(DOCSTRING_DEFAULT_CONFIGFILE, argv=['--foo', 'bar', '1'],
+                       ignore_missing_default_config=True, config_option='--config')
+    assert actual == expected
+
+
+def test_config_section_is_missing_from_default_config_file(tmpdir):
+    """Test not failing if config section is missing from default config file.
 
     :param tmpdir: pytest fixture.
     """
+    config_file = tmpdir.ensure('config.ini')
+    config_file.write(dedent("""\
+    [foobar]
+    bar=baz
+    """))
+    config_file_path = str(config_file)
+    docstring = DOCSTRING_DEFAULT_CONFIGFILE.replace('/skdjfgksdhfgsdfgjshdf.ini', config_file_path)
     expected = EXPECTED_DEFAULT_CONFIGFILE.copy()
-    actual = docoptcfg(DOCSTRING_DEFAULT_CONFIGFILE, argv=[], ignore_missing_default_config=True, config_option='--config')
+    expected['--config'] = config_file_path
+    actual = docoptcfg(docstring, argv=['--foo', 'bar', '1'],
+                       ignore_missing_default_config=True, config_option='--config')
     assert actual == expected
+
+
+def test_configure_from_default_config_file(tmpdir):
+    """Test reading options from default config file.
+
+    :param tmpdir: pytest fixture.
+    """
+    config_file = tmpdir.ensure('config.ini')
+    config_file.write(dedent("""\
+    [my_script]
+    baz=foobar
+    """))
+    config_file_path = str(config_file)
+    docstring = DOCSTRING_DEFAULT_CONFIGFILE.replace('/skdjfgksdhfgsdfgjshdf.ini', config_file_path)
+    expected = EXPECTED_DEFAULT_CONFIGFILE.copy()
+    expected['--config'] = config_file_path
+    expected['--baz'] = 'foobar'
+    actual = docoptcfg(docstring, argv=['--foo', 'bar', '1'],
+                       ignore_missing_default_config=True, config_option='--config')
+    assert actual == expected
+
+
+def test_fail_if_default_config_is_overridden_via_env_and_missing(monkeypatch, tmpdir):
+    """Test overriding the default config file with a non-existant config via cmdline fails.
+
+    :param monkeypatch: pytest fixture.
+    :param tmpdir: pytest fixture.
+    """
+    config_file_path = str(tmpdir.join('config.ini'))
+    monkeypatch.setenv('MY_CONFIG', config_file_path)
+    with pytest.raises(DocoptcfgFileError) as exc:
+        docoptcfg(DOCSTRING_DEFAULT_CONFIGFILE, argv=['1'], env_prefix='MY_',
+                  ignore_missing_default_config=True, config_option='--config')
+    assert exc.value.message == 'Unable to read config file.'
+    assert exc.value.FILE_PATH == config_file_path
+    assert 'No such file or directory' in exc.value.original_error
+
+
+def test_fail_if_default_config_is_overridden_via_cmdline_and_missing(tmpdir):
+    """Test if overriding the default config file with a non-existant config via cmdline fails.
+
+    :param tmpdir: pytest fixture.
+    """
+    config_file_path = str(tmpdir.join('config.ini'))
+    with pytest.raises(DocoptcfgFileError) as exc:
+        docoptcfg(DOCSTRING_DEFAULT_CONFIGFILE, argv=['--config', config_file_path, '1'], env_prefix='MY_',
+                  ignore_missing_default_config=True, config_option='--config')
+    assert exc.value.message == 'Unable to read config file.'
+    assert exc.value.FILE_PATH == config_file_path
+    assert 'No such file or directory' in exc.value.original_error

@@ -178,6 +178,7 @@ def get_opt(key, config, section, booleans, repeatable):
     return str(config.get(section, key[2:]))
 
 
+# pylint: disable=too-many-arguments, too-many-branches
 def values_from_file(docopt_dict, config_option, settable, booleans, repeatable, ignore_missing_default_config):
     """Parse config file and read settable values.
 
@@ -196,6 +197,9 @@ def values_from_file(docopt_dict, config_option, settable, booleans, repeatable,
     :return: Settable values.
     :rtype: dict
     """
+    if ignore_missing_default_config:
+        if config_option not in settable:
+            ignore_missing_default_config = False
     section = docopt.DocoptExit.usage.split()[1]
     settable = set(o for o in settable if o != config_option)
     config = ConfigParser()
@@ -236,8 +240,9 @@ def values_from_file(docopt_dict, config_option, settable, booleans, repeatable,
     return defaults
 
 
-# pylint: disable=keyword-arg-before-vararg
-def docoptcfg(doc, argv=None, env_prefix=None, config_option=None, ignore=None, ignore_missing_default_config=False, *args, **kwargs):
+# pylint: disable=keyword-arg-before-vararg, too-many-arguments
+def docoptcfg(doc, argv=None, env_prefix=None, config_option=None, ignore=None, ignore_missing_default_config=False,
+              *args, **kwargs):
     """Pass most args/kwargs to docopt. Handle `env_prefix` and `config_option`.
 
     :raise DocoptcfgError: If `config_option` isn't found in docstring.
