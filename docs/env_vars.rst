@@ -12,7 +12,8 @@ Short Names
 
 If you've got something like ``-c FILE --config=FILE`` in your docstring, only the ``--config`` part is relevant. Short
 option names are ignored in environment variables. So you can't have something like ``PREFIX_C``. Your end users will
-need to use ``PREFIX_CONFIG`` instead.
+need to use ``PREFIX_CONFIG`` instead. If you have an option that only has a short option then it cannot be set via
+environment variable.
 
 Hyphens
 =======

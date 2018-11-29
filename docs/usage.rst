@@ -26,15 +26,16 @@ Keyword Arguments
 To repeat from the main page of the documentation, config file option values are overridden by environment variables
 which themselves are overridden by command line arguments. Command line arguments are king.
 
-=============== ========================================================================================================
-Name            Description/Notes
-=============== ========================================================================================================
-doc             Required docstring to parse, just like what you pass to docopt.docopt().
-argv            Command line arguments to parse, just like what you pass to docopt.docopt().
-env_prefix      Enables environment variable parsing if not None (the default).
-config_option   Enables config file parsing if not None (the default).
-ignore          Ignore setting options via environment variables or config file.
-=============== ========================================================================================================
+============================= =============================================================================================================
+Name                          Description/Notes
+============================= =============================================================================================================
+doc                           Required docstring to parse, just like what you pass to docopt.docopt().
+argv                          Command line arguments to parse, just like what you pass to docopt.docopt().
+env_prefix                    Enables environment variable parsing if not None (the default).
+config_option                 Enables config file parsing if not None (the default).
+ignore                        Ignore setting options via environment variables or config file.
+ignore_missing_default_config If a default value is set for the config file then this option ignores missing config file or config section.
+============================= =============================================================================================================
 
 doc (string)
 ------------
