@@ -43,13 +43,11 @@ class CheckVersion(Command):
 
     @classmethod
     def initialize_options(cls):
-        """Required by distutils."""
-        pass
+        """Satisfy distutils."""
 
     @classmethod
     def finalize_options(cls):
-        """Required by distutils."""
-        pass
+        """Satisfy distutils."""
 
     @classmethod
     def run(cls):

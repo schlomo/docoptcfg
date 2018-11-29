@@ -231,6 +231,7 @@ def values_from_file(docopt_dict, config_option, settable, booleans, repeatable)
     return defaults
 
 
+# pylint: disable=keyword-arg-before-vararg
 def docoptcfg(doc, argv=None, env_prefix=None, config_option=None, ignore=None, *args, **kwargs):
     """Pass most args/kwargs to docopt. Handle `env_prefix` and `config_option`.
 

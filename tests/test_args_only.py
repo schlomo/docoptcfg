@@ -10,7 +10,7 @@ def test_fam(monkeypatch, tmpdir):
     :param monkeypatch: pytest fixture.
     :param tmpdir: pytest fixture.
     """
-    monkeypatch.setenv('FFMPEG_BIN', tmpdir.ensure('ffmpeg'))
+    monkeypatch.setenv('FFMPEG_BIN', str(tmpdir.ensure('ffmpeg')))
     tmpdir.join('config.ini').write('[FlashAirMusic]\nmac-addr = 00:11:22:33:44:55')
 
     actual = docoptcfg(DOCSTRING_FAM, ['run', '--config', str(tmpdir.join('config.ini'))])
@@ -26,7 +26,7 @@ def test_multi(monkeypatch, tmpdir):
     :param monkeypatch: pytest fixture.
     :param tmpdir: pytest fixture.
     """
-    monkeypatch.setenv('FFMPEG_BIN', tmpdir.ensure('ffmpeg'))
+    monkeypatch.setenv('FFMPEG_BIN', str(tmpdir.ensure('ffmpeg')))
     tmpdir.join('config.ini').write('[my_script]\nkey = \n    val1,\n    val2')
 
     actual = docoptcfg(DOCSTRING_MULTI, ['1', '--config', str(tmpdir.join('config.ini'))])
